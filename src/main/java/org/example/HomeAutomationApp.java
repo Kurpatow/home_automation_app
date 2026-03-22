@@ -26,3 +26,28 @@ abstract class Device {
 
     public String getType() { return type; }
 }
+
+class Light extends Device implements Controllable, Alertable {
+    private  boolean isOn;
+
+    public Light(String name) {
+        super(name, "Light");
+    }
+
+    @Override
+    public void sendAlert(String message) {
+        System.out.println("Alert from " + name + ": " + message);
+    }
+
+    @Override
+    public void turnOn() {
+        isOn = true;
+        System.out.println(name + " light turned on.");
+    }
+
+    @Override
+    public void turnOff() {
+        isOn = false;
+        System.out.println(name + " light turned off.");
+    }
+}
