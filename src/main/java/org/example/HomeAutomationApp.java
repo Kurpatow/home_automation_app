@@ -33,7 +33,7 @@ abstract class Device {
 }
 
 class Light extends Device implements Controllable, Alertable {
-    private  boolean isOn;
+    private boolean isOn;
 
     public Light(String name) {
         super(name, "Light");
@@ -55,7 +55,7 @@ class Light extends Device implements Controllable, Alertable {
         isOn = false;
         System.out.println(name + " light turned off.");
     }
-
+}
     class Thermostat extends Device implements Controllable, Measurable {
         private boolean isHeating;
         private  double currentTemperature;
@@ -89,6 +89,45 @@ class Light extends Device implements Controllable, Alertable {
         public HomeAutomationSystem() {
             devices = new ArrayList<>();
             deviceMap = new HashMap<>();
+        }
+
+        public void addDevice(Device device) {
+            devices.add(device);
+            deviceMap.put(device.getName(),device);
+        }
+
+        public void turnOnDevice(String name) {
+            Device device = deviceMap.get(name);
+            if (device != null && device instanceof Controllable) {
+                ((Controllable) device).turnOn();
+            }
+        }
+
+        public void sendAlert(String name, String message) {
+            Device device = deviceMap.get(name);
+            if (device != null && device instanceof Alertable) {
+                ((Alertable) device).sendAlert(message);
+            }
+        }
+    }
+public class HomeAutomationApp {
+    public static void main(String[] args) {
+        HomeAutomationSystem system = new HomeAutomationSystem();
+
+        Light livingRoomLight = new Light("Living Room");
+        Thermostat bedroomThermostat = new Thermostat("Bedroom");
+
+        system.addDevice(livingRoomLight);
+        system.addDevice(bedroomThermostat);
+
+        system.turnOnDevice("Living Room");
+        system.turnOnDevice("Bedroom");
+
+        system.sendAlert("Living Room", "Intruder detected!");
+
+        if (bedroomThermostat instanceof Measurable) {
+            double temperature = ((Measurable) bedroomThermostat).getMeasurement();
+            System.out.println("Current temperature in Bedroom: " + temperature + "C");
         }
     }
 }
